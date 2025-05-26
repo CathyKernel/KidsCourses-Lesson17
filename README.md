@@ -1,6 +1,5 @@
 # Moses' Journey: Preposition Adventure Game
 
-![Game Screenshot](https://via.placeholder.com/800x400?text=Moses+Journey+Game+Screenshot)
 
 An interactive HTML game combining biblical education with English language learning, designed as homework for LOTW Lesson #A1-17.
 
