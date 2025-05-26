@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Moses' Journey: Preposition Adventure</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5e6c8;
+            text-align: center;
+            padding: 20px;
+        }
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #8b4513;
+        }
+        .score-display {
+            font-size: 1.2em;
+            margin: 10px 0;
+            font-weight: bold;
+            color: #5a8f3d;
+        }
+        .scene {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f3e9;
+            border-radius: 8px;
+            min-height: 200px;
+        }
+        .scene-img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .option-btn {
+            padding: 10px 15px;
+            background-color: #d4a76a;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .option-btn:hover {
+            background-color: #b38b54;
+            transform: scale(1.05);
+        }
+        .option-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .feedback {
+            margin: 10px 0;
+            font-weight: bold;
+            min-height: 24px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .correct {
+            color: green;
+            background-color: #e8f5e9;
+        }
+        .incorrect {
+            color: red;
+            background-color: #ffebee;
+        }
+        .next-btn {
+            padding: 10px 20px;
+            background-color: #5a8f3d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        .next-btn:hover {
+            background-color: #4a7b32;
+        }
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            flex-grow: 1;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #8b4513, #d4a76a);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease-in-out;
+        }
+        .progress-text {
+            font-weight: bold;
+            color: #8b4513;
+            min-width: 60px;
+        }
+        .commandment-card {
+            background-color: #f0e6d2;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: left;
+            transition: transform 0.2s;
+        }
+        .commandment-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .celebration {
+            font-size: 60px;
+            animation: bounce 1s infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Moses' Journey: Preposition Adventure</h1>
+        <p>Help Moses complete his journey by choosing the correct prepositions!</p>
+        
+        <div class="score-display" id="score-display">Score: 0</div>
+        
+        <div class="progress-container">
+            <span class="progress-text">Start</span>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <span class="progress-text">Finish</span>
+        </div>
+        
+        <div id="game-content">
+            <!-- Game content will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const scenes = [
+            {
+                title: "The Burning Bush",
+                description: "God speaks to Moses from the bush.",
+                image: "🌳🔥",
+                question: "The burning bush was ___ the mountain.",
+                options: ["on", "above", "beside", "behind"],
+                correct: 0,
+                feedback: "Correct! The bush was on the mountain (Exodus 3:1-2)."
+            },
+            {
+                title: "Crossing the Red Sea",
+                description: "Moses leads the Israelites to safety.",
+                image: "🌊⛰️",
+                question: "The Israelites walked ___ the sea on dry ground.",
+                options: ["above", "across", "below", "between"],
+                correct: 1,
+                feedback: "Great job! They walked across the Red Sea (Exodus 14:21-22)."
+            },
+            {
+                title: "Mount Sinai",
+                description: "Moses receives God's laws.",
+                image: "⛰️📜",
+                question: "Moses went ___ the mountain to meet with God.",
+                options: ["under", "around", "up", "below"],
+                correct: 2,
+                feedback: "Yes! Moses went up Mount Sinai (Exodus 19:20)."
+            },
+            {
+                title: "The Ten Commandments",
+                description: "God writes His laws on stone tablets.",
+                image: "🪨✍️",
+                question: "God wrote the commandments ___ stone tablets.",
+                options: ["above", "on", "beside", "around"],
+                correct: 1,
+                feedback: "Correct! God wrote them on stone tablets (Exodus 31:18)."
+            },
+            {
+                title: "The Promised Land",
+                description: "After 40 years in the wilderness...",
+                image: "🏞️🌅",
+                question: "The Israelites walked ___ the desert for 40 years.",
+                options: ["above", "across", "around", "under"],
+                correct: 2,
+                feedback: "That's right! They wandered around the desert (Numbers 14:33-34)."
+            }
+        ];
+
+        const commandments = [
+            "Do not have other gods besides Me.",
+            "Do not make idols.",
+            "Do not misuse God's name.",
+            "Keep the Sabbath day holy.",
+            "Honor your father and mother.",
+            "Do not murder.",
+            "Do not commit adultery.",
+            "Do not steal.",
+            "Do not lie.",
+            "Do not covet."
+        ];
+
+        let currentScene = 0;
+        let score = 0;
+        const totalScenes = scenes.length;
+
+        function updateScoreDisplay() {
+            document.getElementById('score-display').textContent = `Score: ${score}/${totalScenes}`;
+        }
+
+        function loadScene(index) {
+            const scene = scenes[index];
+            const gameContent = document.getElementById('game-content');
+            
+            gameContent.innerHTML = `
+                <div class="scene">
+                    <h2>${scene.title}</h2>
+                    <p>${scene.description}</p>
+                    <div style="font-size: 60px;">${scene.image}</div>
+                    <p><strong>${scene.question}</strong></p>
+                    <div class="options">
+                        ${scene.options.map((option, i) => 
+                            `<button class="option-btn" onclick="checkAnswer(${i})">${option}</button>`
+                        ).join('')}
+                    </div>
+                    <div class="feedback" id="feedback"></div>
+                </div>
+            `;
+            
+            updateProgress();
+            updateScoreDisplay();
+        }
+
+        function checkAnswer(selected) {
+            const scene = scenes[currentScene];
+            const feedback = document.getElementById('feedback');
+            
+            // Disable all buttons
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // Highlight selected button
+            const selectedBtn = document.querySelectorAll('.option-btn')[selected];
+            selectedBtn.style.transform = "scale(1.1)";
+            
+            if (selected === scene.correct) {
+                feedback.innerHTML = `<span class="correct">✓ ${scene.feedback}</span>`;
+                score++;
+                updateScoreDisplay();
+                selectedBtn.style.backgroundColor = "#4caf50";
+            } else {
+                feedback.innerHTML = `<span class="incorrect">✗ Try again! The correct answer is "${scene.options[scene.correct]}". ${scene.feedback}</span>`;
+                selectedBtn.style.backgroundColor = "#f44336";
+                // Highlight correct answer
+                document.querySelectorAll('.option-btn')[scene.correct].style.backgroundColor = "#4caf50";
+            }
+            
+            // Show next button if not last scene
+            if (currentScene < totalScenes - 1) {
+                feedback.innerHTML += `<br><button class="next-btn" onclick="nextScene()">Continue Journey →</button>`;
+            } else {
+                feedback.innerHTML += `<br><button class="next-btn" onclick="showResults()">See Results →</button>`;
+            }
+        }
+
+        function nextScene() {
+            currentScene++;
+            loadScene(currentScene);
+        }
+
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            const percentage = (currentScene / totalScenes) * 100;
+            progress.style.width = `${percentage}%`;
+            
+            // Update progress text
+            const progressTexts = document.querySelectorAll('.progress-text');
+            if (currentScene === 0) {
+                progressTexts[0].textContent = "Start";
+                progressTexts[1].textContent = "Finish";
+            } else if (currentScene === totalScenes - 1) {
+                progressTexts[0].textContent = "Almost there!";
+                progressTexts[1].textContent = "Finish";
+            } else {
+                progressTexts[0].textContent = `Scene ${currentScene}`;
+                progressTexts[1].textContent = `Scene ${currentScene+1}`;
+            }
+        }
+
+        function showResults() {
+            const gameContent = document.getElementById('game-content');
+            const percentage = Math.round((score / totalScenes) * 100);
+            let celebration = "";
+            
+            if (percentage === 100) {
+                celebration = `<div class="celebration">🎉 Perfect! 🎉</div>`;
+            } else if (percentage >= 80) {
+                celebration = `<div class="celebration">🌟 Great Job! 🌟</div>`;
+            } else if (percentage >= 60) {
+                celebration = `<div class="celebration">👍 Good Work! 👍</div>`;
+            }
+            
+            gameContent.innerHTML = `
+                <div class="scene">
+                    <h2>Journey Complete!</h2>
+                    ${celebration}
+                    <p>You helped Moses reach the Promised Land!</p>
+                    <p>Your final score: <strong>${score} out of ${totalScenes}</strong> (${percentage}%)</p>
+                    
+                    <h3>The Ten Commandments</h3>
+                    <p>Remember God's laws that Moses received:</p>
+                    <div id="commandments-list">
+                        ${commandments.map((cmd, i) => 
+                            `<div class="commandment-card"><strong>${i+1}.</strong> ${cmd}</div>`
+                        ).join('')}
+                    </div>
+                    
+                    <button class="next-btn" onclick="location.reload()">Play Again</button>
+                </div>
+            `;
+            
+            // Complete the progress bar
+            document.getElementById('progress').style.width = "100%";
+            document.querySelectorAll('.progress-text')[0].textContent = "Complete!";
+        }
+
+        // Start the game
+        loadScene(0);
+        updateScoreDisplay();
+    </script>
+</body>
+</html>
